@@ -20,7 +20,6 @@
 process PCGRHACKATHON {
     tag "$meta.id"
     label 'process_low'
-    
     publishDir = [
                 [
                     mode: 'copy',
@@ -54,6 +53,7 @@ process PCGRHACKATHON {
     tuple val(meta), path("*.pcgr_acmg.grch37.snvs_indels.tiers.tsv"), emit: pcgr_vcf, optional: true
     // TODO nf-core: List additional required output channels/values here
     path "versions.yml"           , emit: versions
+    path ".command.out"           , emit: command_out
 
     when:
     task.ext.when == null || task.ext.when

@@ -38,9 +38,21 @@ nextflow_process {
         }
 
         then {
+            // def commandOut = file("${workDir}/.command.out").text
+            def commandOutContent = file(process.out.command_out.get(0)).text
+            println "Command out content: ${commandOutContent}"
+                
+            println "process.out: ${process.out.get(0)}"
             assertAll(
                 { assert process.success },
-                { assert process.stdout.contains("INFO - Input VCF contains NO valid variants after VCF cleaning - quitting workflow")}
+                { assert process.out.command_out },
+                { 
+                assert commandOutContent.contains("INFO - Input VCF contains NO valid variants after VCF cleaning - quitting workflow")
+                },
+                
+                // { assert process.out.get(0).get(2).text.contains("INFO - Input VCF contains NO valid variants after VCF cleaning - quitting workflow") },
+                // { assert commandOut.contains("INFO - Input VCF contains NO valid variants after VCF cleaning - quitting workflow") },
+                // { assert process.stdout.contains("INFO - Input VCF contains NO valid variants after VCF cleaning - quitting workflow")}
                 { assert !file(params.outdir + "PCGRHACKATHON_results/test1.pcgr_acmg.grch37.snvs_indels.tiers.tsv").exists()}
             )
         }
