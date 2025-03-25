@@ -25,11 +25,11 @@ process PCGRHACKATHON {
     //               Software MUST be pinned to channel (i.e. "bioconda"), version (i.e. "1.10").
     //               For Conda, the build (i.e. "h9402c20_2") must be EXCLUDED to support installation on different operating systems.
     // TODO nf-core: See section in main README for further information regarding finding and adding container addresses to the section below.
-    // conda "${moduleDir}/environment.yml"
-    // container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-    //     'https://depot.galaxyproject.org/singularity/YOUR-TOOL-HERE':
-    //     'https://hub.docker.com/r/sigven/pcgr' }"
-    container "https://hub.docker.com/r/sigven/pcgr"
+    conda "${moduleDir}/environment.yml"
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'https://depot.galaxyproject.org/singularity/YOUR-TOOL-HERE':
+        'docker.io/sigven/pcgr:1.2.0' }"
+    // container "sigven/pcgr:latest"
 
     input:
     // TODO nf-core: Where applicable all sample-specific information e.g. "id", "single_end", "read_group"
@@ -38,7 +38,7 @@ process PCGRHACKATHON {
     //               https://github.com/nf-core/modules/blob/master/modules/nf-core/bwa/index/main.nf
     // TODO nf-core: Where applicable please provide/convert compressed files as input/output
     //               e.g. "*.fastq.gz" and NOT "*.fastq", "*.bam" and NOT "*.sam" etc.
-    tuple val(meta), path(vcf)
+    tuple val(meta), path(vcf), path(vcf_index), path(data_pack)
 
     output:
     // TODO nf-core: Named file extensions MUST be emitted for ALL output channels
@@ -63,7 +63,7 @@ process PCGRHACKATHON {
     // TODO nf-core: Please indent the command appropriately (4 spaces!!) to help with readability ;)
     """
     pcgr \
-    --pcgr_dir /Users/ljohnson04/Downloads/20250314/ \
+    --pcgr_dir ${data_pack} \
     --input_vcf ${vcf} \
     --output_dir \$PWD \
     --sample_id ${meta.id} \
