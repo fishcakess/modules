@@ -15,11 +15,20 @@
 // TODO nf-core: Optional inputs are not currently supported by Nextflow. However, using an empty
 //               list (`[]`) instead of a file can be used to work around this issue.
 
-params.publishDir = "/Users/ljohnson04/pcgrhackathon/pcgrhackathon/results/"
+// params.publishDir = "/Users/ljohnson04/pcgrhackathon/pcgrhackathon/results/"
 
 process PCGRHACKATHON {
     tag "$meta.id"
     label 'process_low'
+    
+    publishDir = [
+                [
+                    mode: 'copy',
+                    path: { "${params.outdir}/PCGRHACKATHON_results/" },
+                    pattern: "*",
+                    enabled: true
+                ]
+            ]
 
     // TODO nf-core: List required Conda package(s).
     //               Software MUST be pinned to channel (i.e. "bioconda"), version (i.e. "1.10").
